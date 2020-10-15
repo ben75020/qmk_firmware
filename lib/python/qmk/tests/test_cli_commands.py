@@ -1,10 +1,11 @@
-import subprocess
+from subprocess import STDOUT, PIPE
+
 from qmk.commands import run
 
 
 def check_subcommand(command, *args):
     cmd = ['bin/qmk', command] + list(args)
-    result = run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+    result = run(cmd, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
     return result
 
 
@@ -28,6 +29,11 @@ def test_compile():
     check_returncode(result)
 
 
+def test_compile_json():
+    result = check_subcommand('compile', '-kb', 'handwired/onekey/pytest', '-km', 'default_json')
+    check_returncode(result)
+
+
 def test_flash():
     result = check_subcommand('flash', '-kb', 'handwired/onekey/pytest', '-km', 'default', '-n')
     check_returncode(result)
@@ -45,8 +51,9 @@ def test_config():
 
 
 def test_kle2json():
-    result = check_subcommand('kle2json', 'kle.txt', '-f')
+    result = check_subcommand('kle2json', 'lib/python/qmk/tests/kle.txt', '-f')
     check_returncode(result)
+    assert 'Wrote out' in result.stdout
 
 
 def test_doctor():
@@ -115,7 +122,7 @@ def test_list_keymaps_no_keyboard_found():
 def test_json2c():
     result = check_subcommand('json2c', 'keyboards/handwired/onekey/keymaps/default_json/keymap.json')
     check_returncode(result, 0)
-    assert result.stdout == '#include QMK_KEYBOARD_H\nconst uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {\t[0] = LAYOUT(KC_A)};\n\n'
+    assert result.stdout == '#include QMK_KEYBOARD_H\nconst uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {\t[0] = LAYOUT_ortho_1x1(KC_A)};\n\n'
 
 
 def test_info():
@@ -132,7 +139,7 @@ def test_info_keyboard_render():
     check_returncode(result)
     assert 'Keyboard Name: handwired/onekey/pytest' in result.stdout
     assert 'Processor: STM32F303' in result.stdout
-    assert 'Layout:' in result.stdout
+    assert 'Layouts:' in result.stdout
     assert 'k0' in result.stdout
 
 
@@ -149,6 +156,18 @@ def test_info_matrix_render():
     check_returncode(result)
     assert 'Keyboard Name: handwired/onekey/pytest' in result.stdout
     assert 'Processor: STM32F303' in result.stdout
-    assert 'LAYOUT' in result.stdout
+    assert 'LAYOUT_ortho_1x1' in result.stdout
     assert '│0A│' in result.stdout
-    assert 'Matrix for "LAYOUT"' in result.stdout
+    assert 'Matrix for "LAYOUT_ortho_1x1"' in result.stdout
+
+
+def test_c2json():
+    result = check_subcommand("c2json", "-kb", "handwired/onekey/pytest", "-km", "default", "keyboards/handwired/onekey/keymaps/default/keymap.c")
+    check_returncode(result)
+    assert result.stdout.strip() == '{"keyboard": "handwired/onekey/pytest", "documentation": "This file is a keymap.json file for handwired/onekey/pytest", "keymap": "default", "layout": "LAYOUT_ortho_1x1", "layers": [["KC_A"]]}'
+
+
+def test_c2json_nocpp():
+    result = check_subcommand("c2json", "--no-cpp", "-kb", "handwired/onekey/pytest", "-km", "default", "keyboards/handwired/onekey/keymaps/pytest_nocpp/keymap.c")
+    check_returncode(result)
+    assert result.stdout.strip() == '{"keyboard": "handwired/onekey/pytest", "documentation": "This file is a keymap.json file for handwired/onekey/pytest", "keymap": "default", "layout": "LAYOUT", "layers": [["KC_ENTER"]]}'
