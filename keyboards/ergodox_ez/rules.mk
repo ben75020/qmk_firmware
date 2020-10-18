@@ -30,14 +30,9 @@ UNICODE_ENABLE   = yes  # Unicode
 SWAP_HANDS_ENABLE= yes  # Allow swapping hands of keyboard
 SLEEP_LED_ENABLE = no
 API_SYSEX_ENABLE = no
-<<<<<<< HEAD
 RGBLIGHT_ENABLE = no
 
 RGB_MATRIX_ENABLE = yes # enable later
-=======
-
-RGB_MATRIX_ENABLE = no  # enable later
->>>>>>> 2c5ad9189cbb789353514b87109213090ce56531
 DEBOUNCE_TYPE = eager_pr
 
 # project specific files
