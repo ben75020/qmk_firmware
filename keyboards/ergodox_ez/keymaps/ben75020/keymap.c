@@ -26,8 +26,43 @@ enum custom_keycodes {
   UGRAV
 };
 
+extern rgblight_config_t rgblight_config;
+
+const rgblight_segment_t PROGMEM my_layer0_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {9, 2, RGB_CYAN}
+);
 
 
+// Now define the array of layers. Later layers take precedence
+const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
+    my_layer0_layer    // Default layer
+);
+
+//Set the appropriate layer color
+layer_state_t layer_state_set_user(layer_state_t state) {
+    rgblight_set_layer_state(0, layer_state_cmp(state, 0));
+    rgblight_set_layer_state(1, layer_state_cmp(state, 1));
+    rgblight_set_layer_state(2, layer_state_cmp(state, 2));
+    rgblight_set_layer_state(3, layer_state_cmp(state, 3));
+    rgblight_set_layer_state(4, layer_state_cmp(state, 4));
+    rgblight_set_layer_state(5, layer_state_cmp(state, 5));
+    return state;
+}
+void keyboard_post_init_user(void) {
+    // Enable the LED layers
+    rgblight_layers = my_rgb_layers;
+  	layer_state_set_user(layer_state);
+}
+
+bool led_update_user(led_t led_state) {
+    rgblight_set_layer_state(0, led_state.caps_lock);
+    return true;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// KEYMAPS DEFINITION
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* Keymap 0: Basic layer
  *
@@ -301,8 +336,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 // This is for Linux Unicode, but we tend to avoid using it.
 void matrix_init_user(void) {
     set_unicode_input_mode(UC_LNX);
+    ergodox_board_led_off();
+    ergodox_right_led_1_off();
+    ergodox_right_led_2_off();
+    ergodox_right_led_3_off();
+  rgblight_enable();
+  rgblight_sethsv_cyan();
+  rgblight_mode(1);
 };
-
 
 // Runs constantly in the background, in a loop.
 void matrix_scan_user(void) {
@@ -310,12 +351,26 @@ void matrix_scan_user(void) {
     uint8_t layer = biton32(layer_state);
 
     switch (layer) {
-      // TODO: Make this relevant to the ErgoDox EZ.
-        case 1:
+        case BASE:
+            ergodox_right_led_1_off();
+            ergodox_right_led_2_off();
+            ergodox_right_led_3_off();
             break;
-        case 2:
+        case SYMB:
+            ergodox_right_led_1_off();
+            ergodox_right_led_2_on();
+            ergodox_right_led_3_off();
+            break;
+        case QWTY:
+            ergodox_right_led_1_off();
+            ergodox_right_led_2_off();
+            ergodox_right_led_3_on();
             break;
         default:
+            ergodox_right_led_1_off();
+            ergodox_right_led_2_off();
+            ergodox_right_led_3_off();
+            ergodox_board_led_off();
             // none
             break;
     }
