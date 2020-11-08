@@ -159,4 +159,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#define NO_ACTION_ONESHOT
 #define NO_ACTION_MACRO
 #define NO_ACTION_FUNCTION
+
+
+#ifdef RGB_MATRIX_ENABLE
+//#define RGB_MATRIX_KEYPRESSES // reacts to keypresses //
+//#define RGB_MATRIX_KEYRELEASES // reacts to keyreleases (instead of keypresses) //
+#define RGB_MATRIX_FRAMEBUFFER_EFFECTS
+#define RGB_DISABLE_AFTER_TIMEOUT 0 // number of ticks to wait until disabling effects
+#define RGB_DISABLE_WHEN_USB_SUSPENDED true // turn off effects when suspended # define RGB_MATRIX_FRAMEBUFFER_EFFECTS //
+#define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_CYCLE_LEFT_RIGHT // Sets the default mode, if none has been set
+#define RGB_MATRIX_HUE_STEP 8
+#define RGB_MATRIX_SAT_STEP 8
+#define RGB_MATRIX_VAL_STEP 8
+#define RGB_MATRIX_SPD_STEP 10
 //#define DEBUG_MATRIX_SCAN_RATE
+
+#endif
+

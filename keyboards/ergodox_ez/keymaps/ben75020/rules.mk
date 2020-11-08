@@ -19,7 +19,7 @@ BOOTLOADER = halfkay
 # Build Options
 #   comment out to disable the options.
 #
-RGB_MATRIX_ENABLE = WS2812
+RGB_MATRIX_ENABLE = yes
 
 
 BOOTMAGIC_ENABLE = no   # Virtual DIP switch configuration
@@ -33,9 +33,9 @@ UNICODE_ENABLE   = yes  # Unicode
 SWAP_HANDS_ENABLE= no  # Allow swapping hands of keyboard
 SLEEP_LED_ENABLE = no
 API_SYSEX_ENABLE = no
+
 RGBLIGHT_ANIMATIONS = no
-RGBLIGHT_ENABLE = yes
-RGB_MATRIX_ENABLE = no # animations for keyboard - (enable later)
+RGBLIGHT_ENABLE = no
 DEBOUNCE_TYPE = eager_pr
 
 # project specific files

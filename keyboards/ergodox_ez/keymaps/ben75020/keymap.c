@@ -4,10 +4,13 @@
 #include "keymap_extras/sendstring_colemak.h"
 
 #define BASE 0 // default layer
-#define QWTY 1
+#define QWTY 9
 #define SYMB 2 // symbols
 #define AIGU 3
 #define GRAV 4
+#define CIRC 5
+
+// We are NOT using UNICODE.
 enum unicode_name {
     a_grave = 0x00e0, // à
     e_grave = 0x00e8, // è
@@ -19,45 +22,18 @@ enum unicode_name {
 enum custom_keycodes {
   VRSN = SAFE_RANGE,
   AGRAV,
+  ACIRC,
   CEDIL,
   EAIGU,
   EGRAV,
-  OGRAV,
-  UGRAV
+  ECIRC,
+  ICIRC,
+  OCIRC,
+  UGRAV,
+  UCIRC
 };
 
-extern rgblight_config_t rgblight_config;
 
-const rgblight_segment_t PROGMEM my_layer0_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-    {9, 2, RGB_CYAN}
-);
-
-
-// Now define the array of layers. Later layers take precedence
-const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
-    my_layer0_layer    // Default layer
-);
-
-//Set the appropriate layer color
-layer_state_t layer_state_set_user(layer_state_t state) {
-    rgblight_set_layer_state(0, layer_state_cmp(state, 0));
-    rgblight_set_layer_state(1, layer_state_cmp(state, 1));
-    rgblight_set_layer_state(2, layer_state_cmp(state, 2));
-    rgblight_set_layer_state(3, layer_state_cmp(state, 3));
-    rgblight_set_layer_state(4, layer_state_cmp(state, 4));
-    rgblight_set_layer_state(5, layer_state_cmp(state, 5));
-    return state;
-}
-void keyboard_post_init_user(void) {
-    // Enable the LED layers
-    rgblight_layers = my_rgb_layers;
-  	layer_state_set_user(layer_state);
-}
-
-bool led_update_user(led_t led_state) {
-    rgblight_set_layer_state(0, led_state.caps_lock);
-    return true;
-}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // KEYMAPS DEFINITION
@@ -94,7 +70,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TAB,         CM_A,         CM_R,       CM_S,       CM_T,       CM_D,
         KC_LSHIFT,      CM_Z,         CM_X,       CM_C,       CM_V,       CM_B,     KC_MINS,
 
-        KC_RCTL,        MO(SYMB),     KC_LALT,    MO(AIGU),   RALT(CM_R),
+        KC_RCTL,        MO(SYMB),     KC_LALT,    MO(AIGU),   MO(GRAV),
 
                                                                           KC_PSCR,  KC_LBRACKET,
                                                                                     KC_HOME,
@@ -166,7 +142,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
  * |        |      |      |  ç   |      |      |      |           |      |      |      |      |      |      |        |
  * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
- *   |      |      |      |      |      |                                       |      |      |      |      |      |
+ *   |      |      |      |      | CIRC |                                       |      |      |      |      |      |
  *   `----------------------------------'                                       `----------------------------------'
  *                                        ,-------------.       ,-------------.
  *                                        |      |      |       |      |      |
@@ -182,7 +158,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS, KC_TRNS,     KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
        KC_TRNS, AGRAV,       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
        KC_TRNS, KC_TRNS,     KC_TRNS, CEDIL,   KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS,     KC_TRNS, KC_TRNS, KC_TRNS,
+       KC_TRNS, KC_TRNS,     KC_TRNS, KC_TRNS, MO(CIRC),
                                                KC_TRNS, KC_TRNS,
                                                         KC_TRNS,
                                       KC_TRNS, KC_TRNS, KC_TRNS,
@@ -207,7 +183,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
  * |        |      |      |  ç   |      |      |      |           |      |      |      |      |      |      |        |
  * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
- *   |      |      |      |      |      |                                       |      |      |      |      |      |
+ *   |      |      |      | CIRC |      |                                       |      |      |      |      |      |
  *   `----------------------------------'                                       `----------------------------------'
  *                                        ,-------------.       ,-------------.
  *                                        |      |      |       |      |      |
@@ -223,7 +199,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS, KC_TRNS,     KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
        KC_TRNS, AGRAV,       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
        KC_TRNS, KC_TRNS,     KC_TRNS, CEDIL,   KC_TRNS, KC_TRNS, KC_TRNS,
-       KC_TRNS, KC_TRNS,     KC_TRNS, KC_TRNS, KC_TRNS,
+       KC_TRNS, KC_TRNS,     KC_TRNS, MO(CIRC), KC_TRNS,
                                                KC_TRNS, KC_TRNS,
                                                         KC_TRNS,
                                       KC_TRNS, KC_TRNS, KC_TRNS,
@@ -237,6 +213,47 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        KC_TRNS,
        KC_TRNS, KC_TRNS, KC_TRNS
     ),
+/* Keymap 4: circumflexes accents
+ *
+ * ,--------------------------------------------------.           ,--------------------------------------------------.
+ * |        |      |      |      |      |      |      |           |      |      |      |      |      |      |        |
+ * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
+ * |        |      |      |      |      |      |      |           |      |      |      |      |  û   |      |        |
+ * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
+ * |        |   â  |      |      |      |      |------|           |------|      |      |  ê   |      |  ô   |        |
+ * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
+ * |        |      |      |  ç   |      |      |      |           |      |      |      |      |      |      |        |
+ * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
+ *   |      |      |      |      |      |                                       |      |      |      |      |      |
+ *   `----------------------------------'                                       `----------------------------------'
+ *                                        ,-------------.       ,-------------.
+ *                                        |      |      |       |      |      |
+ *                                 ,------|------|------|       |------+------+------.
+ *                                 |      |      |      |       |      |      |      |
+ *                                 |      |      |------|       |------|      |      |
+ *                                 |      |      |      |       |      |      |      |
+ *                                 `--------------------'       `--------------------'
+ */
+// accents circumflexes 
+[CIRC] = LAYOUT_ergodox(
+       KC_TRNS, KC_TRNS,     KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+       KC_TRNS, KC_TRNS,     KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+       KC_TRNS, ACIRC,       KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+       KC_TRNS, KC_TRNS,     KC_TRNS, CEDIL,   KC_TRNS, KC_TRNS, KC_TRNS,
+       KC_TRNS, KC_TRNS,     KC_TRNS, KC_TRNS, KC_TRNS,
+                                               KC_TRNS, KC_TRNS,
+                                                        KC_TRNS,
+                                      KC_TRNS, KC_TRNS, KC_TRNS,
+    // right hand
+       KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS,    KC_TRNS, KC_TRNS, KC_TRNS,
+       KC_TRNS,  KC_TRNS, KC_TRNS, UCIRC,      KC_TRNS, KC_TRNS, KC_TRNS,
+                 KC_TRNS, KC_TRNS, ECIRC,      ICIRC,   OCIRC,   KC_TRNS,
+       KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS,    KC_TRNS, KC_TRNS, KC_TRNS,
+                          KC_TRNS, KC_TRNS,    KC_TRNS, KC_TRNS, KC_TRNS,
+       KC_TRNS, KC_TRNS,
+       KC_TRNS,
+       KC_TRNS, KC_TRNS, KC_TRNS
+),
 /* Keymap 5: Qwerty Basic layer
  *
  * ,--------------------------------------------------.           ,--------------------------------------------------.
@@ -303,6 +320,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         SEND_STRING(SS_RALT("r") "a");
       }
       break;
+    case ACIRC:
+      if (record->event.pressed) {
+        SEND_STRING(SS_RALT("x") "a");
+      }
+      break;
     case CEDIL:
       if (record->event.pressed) {
         SEND_STRING(SS_RALT("c"));
@@ -318,14 +340,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         SEND_STRING(SS_RALT("r") "e");
       }
       break;
-    case OGRAV:
+    case ECIRC:
       if (record->event.pressed) {
-        SEND_STRING(SS_RALT("r") "o");
+        SEND_STRING(SS_RALT("x") "e");
+      }
+      break;
+    case OCIRC:
+      if (record->event.pressed) {
+        SEND_STRING(SS_RALT("x") "o");
       }
       break;
     case UGRAV:
       if (record->event.pressed) {
         SEND_STRING(SS_RALT("r") "u");
+      }
+      break;
+    case UCIRC:
+      if (record->event.pressed) {
+        SEND_STRING(SS_RALT("x") "u");
       }
       break;
   }
@@ -336,14 +368,46 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 // This is for Linux Unicode, but we tend to avoid using it.
 void matrix_init_user(void) {
     set_unicode_input_mode(UC_LNX);
-    ergodox_board_led_off();
-    ergodox_right_led_1_off();
-    ergodox_right_led_2_off();
-    ergodox_right_led_3_off();
-  rgblight_enable();
-  rgblight_sethsv_cyan();
-  rgblight_mode(1);
 };
+// This code is only executed at each layer change
+void rgb_matrix_indicators_user(void) {
+    switch(get_highest_layer(layer_state)) {
+      case AIGU:
+           rgb_matrix_set_color_all(0, 0, 0);
+           rgb_matrix_set_color(12, 0, 255, 0);
+           rgb_matrix_set_color(14, 0, 255, 0);
+           rgb_matrix_set_color(7, 0, 255, 0);
+           rgb_matrix_set_color(38, 0, 255, 0);
+           rgb_matrix_set_color(41, 0, 255, 0);
+      break;
+      case GRAV:
+           rgb_matrix_set_color_all(0, 0, 0);
+           rgb_matrix_set_color(12, 255, 0, 0);
+           rgb_matrix_set_color(14, 255, 0, 0);
+           rgb_matrix_set_color(7, 255, 0, 0);
+           rgb_matrix_set_color(38, 255, 0, 0);
+           rgb_matrix_set_color(41, 255, 0, 0);
+      break;
+      case CIRC:
+           rgb_matrix_set_color_all(0, 0, 0);
+           rgb_matrix_set_color(7, 255, 255, 0);
+           rgb_matrix_set_color(12, 255, 255, 0);
+           rgb_matrix_set_color(14, 255, 255, 0);
+           rgb_matrix_set_color(38, 255, 255, 0);
+           rgb_matrix_set_color(41, 255, 255, 0);
+      break;
+      case SYMB:
+           rgb_matrix_set_color_all(0, 255, 0);
+      break;
+      case QWTY:
+            rgb_matrix_set_color_all(0, 0, 244);
+      break;
+
+      default:
+            rgb_matrix_enable();
+      break;
+    }
+}
 
 // Runs constantly in the background, in a loop.
 void matrix_scan_user(void) {
@@ -352,6 +416,7 @@ void matrix_scan_user(void) {
 
     switch (layer) {
         case BASE:
+//            rgb_matrix_set_color_all(250, 28, 244);
             ergodox_right_led_1_off();
             ergodox_right_led_2_off();
             ergodox_right_led_3_off();
@@ -362,6 +427,7 @@ void matrix_scan_user(void) {
             ergodox_right_led_3_off();
             break;
         case QWTY:
+//            rgb_matrix_set_color_all(50, 28, 244);
             ergodox_right_led_1_off();
             ergodox_right_led_2_off();
             ergodox_right_led_3_on();
