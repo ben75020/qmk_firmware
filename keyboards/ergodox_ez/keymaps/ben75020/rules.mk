@@ -19,19 +19,23 @@ BOOTLOADER = halfkay
 # Build Options
 #   comment out to disable the options.
 #
+RGB_MATRIX_ENABLE = yes
+
+
 BOOTMAGIC_ENABLE = no   # Virtual DIP switch configuration
-MOUSEKEY_ENABLE  = yes  # Mouse keys
+MOUSEKEY_ENABLE  = no  # Mouse keys
 EXTRAKEY_ENABLE  = yes  # Audio control and System control
 CONSOLE_ENABLE   = no   # Console for debug
 COMMAND_ENABLE   = yes  # Commands for debug and configuration
 CUSTOM_MATRIX    = lite # Custom matrix file for the ErgoDox EZ
 NKRO_ENABLE      = yes  # USB Nkey Rollover - if this doesn't work, see here: https://github.com/tmk/tmk_keyboard/wiki/FAQ#nkro-doesnt-work
 UNICODE_ENABLE   = yes  # Unicode
-SWAP_HANDS_ENABLE= yes  # Allow swapping hands of keyboard
+SWAP_HANDS_ENABLE= no  # Allow swapping hands of keyboard
 SLEEP_LED_ENABLE = no
 API_SYSEX_ENABLE = no
 
-RGB_MATRIX_ENABLE = no  # enable later
+RGBLIGHT_ANIMATIONS = no
+RGBLIGHT_ENABLE = no
 DEBOUNCE_TYPE = eager_pr
 
 # project specific files
@@ -40,3 +44,5 @@ SRC += matrix.c \
 QUANTUM_LIB_SRC += i2c_master.c
 
 LAYOUTS = ergodox
+
+LTO_ENABLE = yes #Generates lighter firmwares (27384 bytes against 31148 bytes as sample of 2020-11-11)
