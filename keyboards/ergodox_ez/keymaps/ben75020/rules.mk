@@ -44,3 +44,5 @@ SRC += matrix.c \
 QUANTUM_LIB_SRC += i2c_master.c
 
 LAYOUTS = ergodox
+
+LTO_ENABLE = yes #Generates lighter firmwares (27384 bytes against 31148 bytes as sample of 2020-11-11)

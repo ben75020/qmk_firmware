@@ -157,13 +157,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#define NO_ACTION_LAYER
 //#define NO_ACTION_TAPPING
 //#define NO_ACTION_ONESHOT
-#define NO_ACTION_MACRO
-#define NO_ACTION_FUNCTION
+#define NO_ACTION_MACRO //disable old-style macro handling using (deprecated)
+#define NO_ACTION_FUNCTION //disable old-style function handling using (deprecated)
 
 
 #ifdef RGB_MATRIX_ENABLE
-//#define RGB_MATRIX_KEYPRESSES // reacts to keypresses //
-//#define RGB_MATRIX_KEYRELEASES // reacts to keyreleases (instead of keypresses) //
+#define RGB_MATRIX_KEYPRESSES // reacts to keypresses //
+#define RGB_MATRIX_KEYRELEASES // reacts to keyreleases (instead of keypresses) //
 #define RGB_MATRIX_FRAMEBUFFER_EFFECTS
 #define RGB_DISABLE_AFTER_TIMEOUT 0 // number of ticks to wait until disabling effects
 #define RGB_DISABLE_WHEN_USB_SUSPENDED true // turn off effects when suspended # define RGB_MATRIX_FRAMEBUFFER_EFFECTS //
@@ -176,3 +176,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #endif
 
+#define USB_POLLING_INTERVAL_MS 5 //This allows to type the macro faster (default seems 10)

@@ -4,11 +4,12 @@
 #include "keymap_extras/sendstring_colemak.h"
 
 #define BASE 0 // default layer
-#define QWTY 9
+#define QWTY 1
 #define SYMB 2 // symbols
 #define AIGU 3
 #define GRAV 4
 #define CIRC 5
+#define ALTL 6
 
 // We are NOT using UNICODE.
 enum unicode_name {
@@ -30,7 +31,8 @@ enum custom_keycodes {
   ICIRC,
   OCIRC,
   UGRAV,
-  UCIRC
+  UCIRC,
+  GMEET
 };
 
 
@@ -51,7 +53,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------|   -  |           |  '   |------+------+------+------+------+--------|
  * | Shift  |   w  |   x  |   c  |   v  |   b  |      |           |      |   k  |   m  |   ,  |   .  |   /  | RShift |
  * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
- *   | Ctrl |  L2  | Alt  | Aigu | Grav |                                       | left | Down |  up  |right | PAUSE  |
+ *   | Ctrl |  L2  | Alt  | Aigu | Aigu |                                       | grav | left | Down |  up  | right  |
  *   `----------------------------------'                                       `----------------------------------'
  *                                        ,-------------.       ,---------------.
  *                                        |Print |  {   |       |  }   |   Del  |
@@ -70,7 +72,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TAB,         CM_A,         CM_R,       CM_S,       CM_T,       CM_D,
         KC_LSHIFT,      CM_Z,         CM_X,       CM_C,       CM_V,       CM_B,     KC_MINS,
 
-        KC_RCTL,        MO(SYMB),     KC_LALT,    MO(AIGU),   MO(GRAV),
+        KC_RCTL,        MO(SYMB),     KC_LALT,    KC_LALT,    MO(AIGU),
 
                                                                           KC_PSCR,  KC_LBRACKET,
                                                                                     KC_HOME,
@@ -82,7 +84,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                         CM_H,         CM_N,       CM_E,       CM_I,       CM_O,     KC_QUOT,
         KC_QUOT,        CM_K,         CM_M,       KC_COMMA,   KC_DOT,     KC_SLSH,  KC_RSHIFT,
 
-                                      KC_LEFT,    KC_DOWN,    KC_UP,      KC_RIGHT, KC_PAUSE,
+                                      MO(GRAV),   KC_LEFT,    KC_DOWN,    KC_UP,    KC_RIGHT,
 
 
         KC_RBRACKET,    KC_DEL,
@@ -114,7 +116,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [SYMB] = LAYOUT_ergodox(
        // left hand
        RGB_TOG,      KC_F1,    KC_F2,     KC_F3,      KC_F4,      KC_F5,    KC_TRNS,
-       RGB_MOD,      TG(QWTY), KC_AT,     KC_LCBR,    KC_RCBR,    KC_PIPE,  KC_TRNS,
+       RGB_MOD,      TG(QWTY), KC_AT,     KC_LCBR,    KC_RCBR,    GMEET,  KC_TRNS,
        KC_TRNS,      KC_HASH,  KC_DLR,    KC_LPRN,    KC_RPRN,    KC_GRV,
        KC_TRNS,      KC_PERC,  KC_CIRC,   TG(BASE),   KC_RBRC,    KC_TILD,  KC_TRNS,
        EEP_RST,      RESET,    KC_TRNS,   KC_TRNS,    KC_TRNS,
@@ -206,7 +208,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // right hand
        KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS,    KC_TRNS, KC_TRNS, KC_TRNS,
        KC_TRNS,  KC_TRNS, KC_TRNS, UGRAV,      KC_TRNS, KC_TRNS, KC_TRNS,
-                 KC_TRNS, KC_TRNS, EAIGU,      KC_TRNS, KC_TRNS, KC_TRNS,
+                 KC_TRNS, KC_TRNS, EGRAV,      KC_TRNS, KC_TRNS, KC_TRNS,
        KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS,    KC_TRNS, KC_TRNS, KC_TRNS,
                           KC_TRNS, KC_TRNS,    KC_TRNS, KC_TRNS, KC_TRNS,
        KC_TRNS, KC_TRNS,
@@ -312,9 +314,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       if (record->event.pressed) {
         SEND_STRING (QMK_KEYBOARD "/" QMK_KEYMAP " @ " QMK_VERSION);
       }
-      return false;
       break;
-  // Test macro 1
     case AGRAV:
       if (record->event.pressed) {
         SEND_STRING(SS_RALT("r") "a");
@@ -360,6 +360,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         SEND_STRING(SS_RALT("x") "u");
       }
       break;
+    case GMEET:
+      if (record->event.pressed) {
+        SEND_STRING("Meet on : https://meet.google.com/bjm-wixq-xnr \n");
+        SEND_STRING(SS_LALT("d") SS_DELAY(300));
+        SEND_STRING("i3-msg 'workspace 0; exec /usr/bin/google-chrome --app=https://meet.google.com/bjm-wixq-xnr'\n");
+      }
+      break;
   }
   return true;
 }
@@ -397,7 +404,28 @@ void rgb_matrix_indicators_user(void) {
            rgb_matrix_set_color(41, 255, 255, 0);
       break;
       case SYMB:
-           rgb_matrix_set_color_all(0, 255, 0);
+           rgb_matrix_set_color_all(0, 0, 0);
+           rgb_matrix_set_color(0, 255, 0, 0);
+           rgb_matrix_set_color(1, 255, 0, 0);
+           rgb_matrix_set_color(2, 255, 0, 0);
+           rgb_matrix_set_color(3, 255, 0, 0);
+           rgb_matrix_set_color(4, 255, 0, 0);
+           rgb_matrix_set_color(24, 255, 0, 0);
+           rgb_matrix_set_color(25, 255, 0, 0);
+           rgb_matrix_set_color(26, 255, 0, 0);
+           rgb_matrix_set_color(27, 255, 0, 0);
+           rgb_matrix_set_color(28, 255, 0, 0);
+           rgb_matrix_set_color(29, 138, 43, 226);
+           rgb_matrix_set_color(33, 0, 0, 244);
+           rgb_matrix_set_color(47, 255, 0, 0);
+
+      break;
+      case ALTL:
+           rgb_matrix_set_color_all(0, 0, 0);
+           rgb_matrix_set_color(47, 255, 0, 0);
+           rgb_matrix_set_color(29, 255, 255, 255);
+           rgb_matrix_set_color(33, 0, 0, 244);
+
       break;
       case QWTY:
             rgb_matrix_set_color_all(0, 0, 244);
@@ -415,12 +443,6 @@ void matrix_scan_user(void) {
     uint8_t layer = biton32(layer_state);
 
     switch (layer) {
-        case BASE:
-//            rgb_matrix_set_color_all(250, 28, 244);
-            ergodox_right_led_1_off();
-            ergodox_right_led_2_off();
-            ergodox_right_led_3_off();
-            break;
         case SYMB:
             ergodox_right_led_1_off();
             ergodox_right_led_2_on();
